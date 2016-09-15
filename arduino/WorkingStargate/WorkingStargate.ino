@@ -263,7 +263,7 @@ void initAudio() {
 }
 
 void setVolume() {
-  static int oldvol = -1;
+  static int oldvol = int((MINVOL + MAXVOL) / 2);
   int vol = analogRead(AUDIO_VOLUME);
   // analogRead will return (0, 1023) and setVolume takes (0, 254), but values
   // larger than 90 seem too quiet to hear, so scale (0, 1024) to (0, 90).
@@ -275,10 +275,10 @@ void setVolume() {
   // converge on the new setting.
   vol = constrain(vol, oldvol - 5, oldvol + 5);
   if (oldvol != vol) {
-    debug(F("Changing volume to: "));
-    debugln(vol);
-    oldvol = vol;
+//    debug(F("Changing volume to: "));
+//    debugln(vol);
     audio.setVolume(vol, vol);
+    oldvol = vol;
   }
 }
 
