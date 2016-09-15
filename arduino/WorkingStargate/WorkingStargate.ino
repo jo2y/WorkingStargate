@@ -259,7 +259,6 @@ void initAudio() {
   }
   setVolume();
   audio.useInterrupt(VS1053_FILEPLAYER_PIN_INT);
-  audio.sineTest(0x44, 5);
 }
 
 void setVolume() {
