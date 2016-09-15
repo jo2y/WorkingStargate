@@ -63,7 +63,7 @@
 #define CHEVRON_MOTOR_PORT 2
 // How fast should the motors be moved? The values here are likely suitable.
 #define GLYPH_MOTOR_SPEED 50  // RPMs
-#define CHEVRON_MOTOR_SPEED 50  // RPMs
+#define CHEVRON_MOTOR_SPEED 10  // RPMs
 
 //
 // Audio Settings
