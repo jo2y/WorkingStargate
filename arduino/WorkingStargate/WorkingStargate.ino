@@ -31,6 +31,9 @@
 // DREQ should be an Int pin, see http://arduino.cc/en/Reference/attachInterrupt
 #define AUDIO_DREQ 3           // VS1053 Data request, ideally an Interrupt pin
 #define AUDIO_VOLUME A0
+// MINVOL/MAXVOL should be (0, 254) with 0 being the loudest and 254 as silence.
+#define MINVOL 90
+#define MAXVOL 0
 
 // Unusable pins.
 // These pins have double duty. Annotating them so the dual role is not
@@ -254,14 +257,35 @@ void initAudio() {
     audio.dumpRegs();
 #endif
   }
-  audio.setVolume(20, 20);
+  setVolume();
   audio.useInterrupt(VS1053_FILEPLAYER_PIN_INT);
   audio.sineTest(0x44, 5);
 }
 
+void setVolume() {
+  static int oldvol = -1;
+  int vol = analogRead(AUDIO_VOLUME);
+  // analogRead will return (0, 1023) and setVolume takes (0, 254), but values
+  // larger than 90 seem too quiet to hear, so scale (0, 1024) to (0, 90).
+  // 0 is full volume and 254 is silence.
+  // 255 will activate analog shutdown mode.
+  vol = map(vol, 0, 1023, MINVOL, MAXVOL);
+  // Sometimes we get noise from the ADC, so constrain the jumps in volume
+  // to something sane. If the volume truly was changed a lot, we will gradually
+  // converge on the new setting.
+  vol = constrain(vol, oldvol - 5, oldvol + 5);
+  if (oldvol != vol) {
+    debug(F("Changing volume to: "));
+    debugln(vol);
+    oldvol = vol;
+    audio.setVolume(vol, vol);
+  }
+}
+
 void startSound(const char *file) {
-  debug(F("Playing sound: "));
+  debug(F("Playing file: "));
   debugln(file);
+  setVolume();
   if (!audio.startPlayingFile(file)) {
     debug(F("Could not open file: "));
     debugln(file);
@@ -271,6 +295,7 @@ void startSound(const char *file) {
 void waitSound() {
   debugln(F("Waiting for track to end."));
   while(audio.playingMusic) {
+    setVolume();
     delay(100);
   }
 }
