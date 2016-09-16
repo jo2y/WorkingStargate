@@ -209,6 +209,26 @@ void initMotors() {
   SMChevron->setSpeed(CHEVRON_MOTOR_SPEED);
 }
 
+// Glitch's calibration routine did a series of reads to calibrate the average
+// ambient light and then consider a percentage difference as the right spot.
+// My testing shows that when the led light hits the ldr I'm using, I get a 0,
+// so I've skipped that extra step.
+void calibrateGlyphs() {
+  debugln(F("Starting Glyph Calibration."));
+  pinMode(CAL_LED, OUTPUT);
+  digitalWrite(CAL_LED, LOW);
+  // Back up a little in case we were already calibrated. This will keep us
+  // from doing a full circle around the gate.
+  SMGlyph->step(10, BACKWARD, SINGLE);
+  digitalWrite(CAL_LED, HIGH);
+  while (analogRead(CAL_LDR) > 0) {
+    SMGlyph->step(1, FORWARD, MICROSTEP);
+  }
+  digitalWrite(CAL_LED, LOW);
+  SMGlyph->release();
+  debugln(F("Finishing Calibration."));
+}
+
 void rotateGate(int glyph, int chevron) {
   // Assume the gate starts with Earth at the top.
   static float curr_glyph = GLYPHS[0];
@@ -350,6 +370,7 @@ void setup() {
   initSD();
   // TODO(jo2y): Seed with real randomness.
   randomSeed(0);
+  calibrateGlyphs();
 }
 
 void loop() {
