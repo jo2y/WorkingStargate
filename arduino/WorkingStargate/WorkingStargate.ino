@@ -359,6 +359,11 @@ void randomDialing() {
 }
 
 void setup() {
+  // Ideally we would use an analog pin that is not connected to anything else
+  // to ensure the value is real random noise. However, all the pins are
+  // allocated to something. Using CAL_LDR + AUDIO_VOLUME means randomness will
+  // will be based on ambient light conditions and the last set volume.
+  randomSeed(analogRead(CAL_LDR) + analogRead(AUDIO_VOLUME));
 #if DEBUG
   Serial.begin(9600);
 #endif
@@ -368,8 +373,6 @@ void setup() {
   initMotors();
   initAudio();
   initSD();
-  // TODO(jo2y): Seed with real randomness.
-  randomSeed(0);
   calibrateGlyphs();
 }
 
