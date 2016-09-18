@@ -13,8 +13,8 @@
 #define GATE_PIXELS 5
 
 // DHD buttons
-#define DHD_OUTER A2
-#define DHD_INNER A3
+#define DHD_OUTER A2  // Serial pin 4
+#define DHD_INNER A3  // Serial pin 5
 // The data pin for the chain of NeoPixels around the DHD.
 #define DHD_PIXELS 8
 
@@ -105,8 +105,9 @@
 
 // No user servicable values below here.
 #include <SD.h>
-#include <Adafruit_NeoPixel.h>
+#include <Adafruit_MCP23008.h>
 #include <Adafruit_MotorShield.h>
+#include <Adafruit_NeoPixel.h>
 #include <Adafruit_VS1053.h>
 
 // Global objects
@@ -120,6 +121,7 @@ Adafruit_StepperMotor *SMChevron = AFMS.getStepper(
 Adafruit_VS1053_FilePlayer audio = Adafruit_VS1053_FilePlayer(
     AUDIO_SHIELD_RESET, AUDIO_SHIELD_CS, AUDIO_SHIELD_DCS,
     AUDIO_DREQ, AUDIO_CARDCS);
+Adafruit_MCP23008 extra_pins = Adafruit_MCP23008();
 
 // Colors
 uint32_t off = pixels.Color(0, 0, 0);
@@ -371,6 +373,15 @@ void initSD() {
   SD.begin(AUDIO_CARDCS);
 }
 
+void initExtraPins() {
+  debugln(F("Initializing the MCP23008."));
+  extra_pins.begin();
+  for (int x = 0; x < 8; ++x) {
+    extra_pins.pinMode(x, INPUT);
+    extra_pins.pullUp(x, HIGH);
+  }
+}
+
 void randomDialing() {
   static int chevron = 5;
   debugln(F("Starting dialing sequence."));
@@ -410,6 +421,7 @@ void setup() {
 #endif
   debugln(F("Working Stargate MKII."));
   debugln(F("Initializing."));
+  initExtraPins();
   initPixels();
   initMotors();
   initAudio();
