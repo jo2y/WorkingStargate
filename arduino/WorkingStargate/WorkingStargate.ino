@@ -2,7 +2,7 @@
 //
 // LED and Pixel Related Settings
 //
-// How long should the locking chevron be engated?
+// How long should the locking chevron be engaged?
 #define LOCK_DELAY 1500  // in milliseconds
 
 //
@@ -170,6 +170,47 @@ float GLYPHS[(int) NUM_GLYPHS] = {
   37 * STEPS_PER_GLYPH, // Leo Minor
   38 * STEPS_PER_GLYPH, // Leo
 };
+
+// List of addresses provided by
+// http://www.rdanderson.com/stargate/glyphs/glyphs.htm
+// Addresses with missing symbols were skipped.
+int milky_addresses[][6] = {
+  {27, 7, 15, 32, 12, 30}, // Abydos
+  {20, 18, 11, 38, 10, 32}, // Apophis' Base
+  {20, 2, 35, 8, 26, 15}, // Camelot
+  {29, 3, 6, 9, 12, 16}, // Castiana
+  {29, 18, 19, 20, 21, 22}, // Sahal
+  {9, 2, 23, 15, 37, 20}, // Chulak
+  {14, 21, 16, 11, 30, 7}, // Clava Thesara Infinitas
+  {26, 20, 35, 32, 23, 4}, // Clava Thesara Infinitas (again?)
+  {3, 32, 16, 8, 10, 12}, // Destroyers
+  {28, 38, 35, 9, 15, 3}, // Edora
+  {30, 37, 9, 7, 18, 16}, // Euronda
+  {29, 8, 18, 22, 4, 25}, // Juna
+  {6, 16, 8, 3, 26, 25}, // Kallana
+  {26, 35, 6, 8, 23, 14}, // Kheb
+  {18, 2, 30, 12, 26, 33}, // K'Tau
+  {24, 12, 32, 7, 11, 34}, // Martin's Homeworld (destroyed)
+  {38, 28, 15, 35, 3, 19}, // NID Off-world Base
+  {28, 8, 16, 33, 13, 31}, // P2X-555
+  {38, 9, 28, 15, 35, 3}, // P34-353J
+  {19, 8, 4, 37, 26, 16}, // P3W-451 (Black hole planet)
+  {9, 26, 34, 27, 17, 21}, // P3X-118
+  {3, 28, 9, 35, 24, 15}, // P3X-562
+  {25, 8, 18, 29, 4, 22}, // P9C-372
+  {12, 36, 23, 18, 7, 27}, // PB5-926
+  {35, 3, 31, 29, 5, 17}, // Praclarush Taonas
+  {30, 19, 34, 9, 33, 18}, // Sangreal Planet
+  {33, 28, 23, 26, 16, 21}, // Tartarus
+  {6, 33, 27, 37, 11, 18}, // Tollan (destroyed)
+  {4, 29, 8, 22, 18, 25}, // Tollana
+  {3, 8, 2, 12, 19, 30}, // Vagon Brei
+  {9, 18, 27, 15, 21, 36}, // Unnammed Planet from Unending
+};
+
+// Special gate addresses.
+int earth[] = {28, 26, 5, 36, 11, 29};
+int othana[] = {11, 27, 23, 16, 33, 3, 9};
 
 // Pixel related functions
 
