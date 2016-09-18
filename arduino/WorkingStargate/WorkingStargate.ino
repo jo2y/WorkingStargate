@@ -427,6 +427,7 @@ void setup() {
   initAudio();
   initSD();
   calibrateGlyphs();
+  debugln(F("Initialization Complete."));
 }
 
 void loop() {
