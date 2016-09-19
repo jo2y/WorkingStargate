@@ -178,7 +178,7 @@ float GLYPHS[(int) NUM_GLYPHS] = {
 // List of addresses provided by
 // http://www.rdanderson.com/stargate/glyphs/glyphs.htm
 // Addresses with missing symbols were skipped.
-int milky_addresses[][6] = {
+byte milky_addresses[][6] = {
   {27, 7, 15, 32, 12, 30}, // Abydos
   {20, 18, 11, 38, 10, 32}, // Apophis' Base
   {20, 2, 35, 8, 26, 15}, // Camelot
@@ -213,8 +213,8 @@ int milky_addresses[][6] = {
 };
 
 // Special gate addresses.
-int earth[] = {28, 26, 5, 36, 11, 29};
-int othana[] = {11, 27, 23, 16, 33, 3, 9};
+byte earth[] = {28, 26, 5, 36, 11, 29};
+byte othana[] = {11, 27, 23, 16, 33, 3, 9};
 
 // Pixel related functions
 
