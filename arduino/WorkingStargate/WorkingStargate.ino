@@ -257,26 +257,27 @@ void initMotors() {
 
 void calibrateGlyphs() {
   debugln(F("Starting Glyph Calibration."));
+  // Increase the motor speed to calibrate quickly.
+  SMGlyph->setSpeed(max(GLYPH_MOTOR_SPEED, 60));
   pinMode(CAL_LDR, INPUT_PULLUP);
   pinMode(CAL_LED, OUTPUT);
   digitalWrite(CAL_LED, LOW);
   float setpoint = 1024.0;
-  int readings = 0;
+  unsigned int readings = 0;
   for (int i = 0; i < 10; ++i) {
     readings += analogRead(CAL_LDR);
+    SMGlyph->step(1, BACKWARD, MICROSTEP);
   }
   setpoint = (readings / 10.0) * 0.5;
   debug(F("Setpoint: "));
   debugln(setpoint);
-  // Back up a little in case we were already calibrated. This will keep us
-  // from doing a full circle around the gate.
-  SMGlyph->step(STEPS_PER_GLYPH, BACKWARD, SINGLE);
   digitalWrite(CAL_LED, HIGH);
   while (analogRead(CAL_LDR) > setpoint) {
     SMGlyph->step(1, FORWARD, MICROSTEP);
   }
   digitalWrite(CAL_LED, LOW);
   SMGlyph->release();
+  SMGlyph->setSpeed(GLYPH_MOTOR_SPEED);
   debugln(F("Finishing Calibration."));
 }
 
