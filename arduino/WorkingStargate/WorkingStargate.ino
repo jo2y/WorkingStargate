@@ -301,7 +301,7 @@ void rotateGate(int glyph, int chevron) {
   while (steps < 0) {
     steps += GLYPH_RING_STEPS;
   }
-  while (steps > GLYPH_GEAR_RATIO) {
+  while (steps > GLYPH_RING_STEPS) {
     steps -= GLYPH_RING_STEPS;
   }
 
