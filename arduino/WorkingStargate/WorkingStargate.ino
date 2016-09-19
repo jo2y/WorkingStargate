@@ -99,7 +99,8 @@
 #define GLYPH_GEAR_TEETH 13.0
 #define GLYPH_RING_TEETH 78.0
 #define GLYPH_GEAR_RATIO ( GLYPH_RING_TEETH / GLYPH_GEAR_TEETH )
-#define STEPS_PER_GLYPH ( GLYPH_MOTOR_STEPS * GLYPH_GEAR_RATIO / NUM_GLYPHS)
+#define GLYPH_RING_STEPS ( GLYPH_MOTOR_STEPS * GLYPH_GEAR_RATIO )
+#define STEPS_PER_GLYPH ( GLYPH_RING_STEPS / NUM_GLYPHS)
 #define NUM_PIXELS 9
 #define TOP_PIXEL 4
 #define LOCK_STEPS 10
@@ -288,11 +289,7 @@ void rotateGate(int glyph, int chevron) {
   int steps = 0;
 
   // Bounds checking before we access GLYPHS.
-  if (glyph < 0) {
-    glyph = 0;
-  } else if (glyph > NUM_GLYPHS) {
-    glyph = NUM_GLYPHS;
-  }
+  glyph = constrain(glyph, 0, NUMGLYPHS);
 
   int offset = GLYPHS[glyph];
   if (direction == FORWARD) {
@@ -300,15 +297,18 @@ void rotateGate(int glyph, int chevron) {
   } else if (direction == BACKWARD) {
     steps = curr_glyph - offset;
   }
+  // Keep the rotation within a single rotation of the gate.
   while (steps < 0) {
-    steps += GLYPH_MOTOR_STEPS;
+    steps += GLYPH_RING_STEPS;
   }
-  while (steps > GLYPH_MOTOR_STEPS) {
-    steps -= GLYPH_MOTOR_STEPS;
+  while (steps > GLYPH_GEAR_RATIO) {
+    steps -= GLYPH_RING_STEPS;
   }
 
   debug(F("Moving "));
   debug(steps);
+  debug(F(" steps "));
+  debug((direction == FORWARD) ? F("Forward") : F("Backward");
   debug(F(" to glyph "));
   debug(glyph);
   debug(F(" for chevron "));
