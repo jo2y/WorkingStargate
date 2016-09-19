@@ -340,10 +340,14 @@ void setVolume() {
   // Sometimes we get noise from the ADC, so constrain the jumps in volume
   // to something sane. If the volume truly was changed a lot, we will gradually
   // converge on the new setting.
-  vol = constrain(vol, oldvol - 5, oldvol + 5);
+  vol = constrain(vol, oldvol - 3, oldvol + 3);
   if (oldvol != vol) {
-//    debug(F("Changing volume to: "));
-//    debugln(vol);
+    if (abs(oldvol - vol) > 2) {
+      // Avoid spamming serial if the volume is fluctuating by a small amount
+      // due to electrical noise.
+      debug(F("Changing volume to: "));
+      debugln(vol);
+    }
     audio.setVolume(vol, vol);
     oldvol = vol;
   }
