@@ -102,6 +102,7 @@
 #define STEPS_PER_GLYPH ( GLYPH_MOTOR_STEPS * GLYPH_GEAR_RATIO / NUM_GLYPHS)
 #define NUM_PIXELS 9
 #define TOP_PIXEL 4
+#define LOCK_STEPS 10
 
 // No user servicable values below here.
 #include <SD.h>
@@ -227,11 +228,11 @@ void lockChevron(int chevron) {
   debugln(F("Lowering Top Chevron."));
   startSound(SOUND_CHEVRON_LOCK);
   
-  SMChevron->step(10, BACKWARD, SINGLE);
+  SMChevron->step(LOCK_STEPS, BACKWARD, SINGLE);
   delay(LOCK_DELAY);
   waitSound();
   debugln(F("Raising Top Chevron."));
-  SMChevron->step(10, FORWARD, SINGLE);
+  SMChevron->step(LOCK_STEPS, FORWARD, SINGLE);
   pixels.setPixelColor(TOP_PIXEL, off);
   pixels.setPixelColor(chevron, on);
   pixels.show();
@@ -250,6 +251,8 @@ void initMotors() {
   AFMS.begin();
   SMGlyph->setSpeed(GLYPH_MOTOR_SPEED);
   SMChevron->setSpeed(CHEVRON_MOTOR_SPEED);
+  debugln(F("Raising Top Chevron."));
+  SMChevron->step(10, FORWARD, SINGLE);
 }
 
 void calibrateGlyphs() {
