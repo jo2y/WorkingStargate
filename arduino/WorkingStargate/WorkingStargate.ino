@@ -289,7 +289,7 @@ void rotateGate(int glyph, int chevron) {
   int steps = 0;
 
   // Bounds checking before we access GLYPHS.
-  glyph = constrain(glyph, 0, NUMGLYPHS);
+  glyph = constrain(glyph, 0, NUM_GLYPHS);
 
   int offset = GLYPHS[glyph];
   if (direction == FORWARD) {
