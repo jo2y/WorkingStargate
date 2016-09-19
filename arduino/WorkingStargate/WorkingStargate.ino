@@ -308,7 +308,7 @@ void rotateGate(int glyph, int chevron) {
   debug(F("Moving "));
   debug(steps);
   debug(F(" steps "));
-  debug((direction == FORWARD) ? F("Forward") : F("Backward");
+  debug((direction == FORWARD) ? F("Forward") : F("Backward"));
   debug(F(" to glyph "));
   debug(glyph);
   debug(F(" for chevron "));
