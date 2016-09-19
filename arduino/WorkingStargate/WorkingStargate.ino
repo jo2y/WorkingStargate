@@ -329,7 +329,9 @@ void initAudio() {
     audio.dumpRegs();
 #endif
   }
-  setVolume();
+  // Set volume multiple times to quickly narrow in on the set value.
+  // This is to overcome the dampening that happens normally.
+  setVolume(); setVolume(); setVolume(); setVolume(); setVolume();
   audio.useInterrupt(VS1053_FILEPLAYER_PIN_INT);
 }
 
