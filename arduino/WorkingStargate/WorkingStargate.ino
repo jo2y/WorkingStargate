@@ -252,19 +252,24 @@ void initMotors() {
   SMChevron->setSpeed(CHEVRON_MOTOR_SPEED);
 }
 
-// Glitch's calibration routine did a series of reads to calibrate the average
-// ambient light and then consider a percentage difference as the right spot.
-// My testing shows that when the led light hits the ldr I'm using, I get a 0,
-// so I've skipped that extra step.
 void calibrateGlyphs() {
   debugln(F("Starting Glyph Calibration."));
+  pinMode(CAL_LDR, INPUT_PULLUP);
   pinMode(CAL_LED, OUTPUT);
   digitalWrite(CAL_LED, LOW);
+  float setpoint = 1024.0;
+  int readings = 0;
+  for (int i = 0; i < 10; ++i) {
+    readings += analogRead(CAL_LDR);
+  }
+  setpoint = (readings / 10.0) * 0.5;
+  debug(F("Setpoint: "));
+  debugln(setpoint);
   // Back up a little in case we were already calibrated. This will keep us
   // from doing a full circle around the gate.
-  SMGlyph->step(10, BACKWARD, SINGLE);
+  SMGlyph->step(STEPS_PER_GLYPH, BACKWARD, SINGLE);
   digitalWrite(CAL_LED, HIGH);
-  while (analogRead(CAL_LDR) > 0) {
+  while (analogRead(CAL_LDR) > setpoint) {
     SMGlyph->step(1, FORWARD, MICROSTEP);
   }
   digitalWrite(CAL_LED, LOW);
