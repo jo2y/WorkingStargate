@@ -12,6 +12,10 @@
 // The data pin for the chain of NeoPixels around the gate.
 #define GATE_PIXELS 5
 
+// The left and right ramp lights. Connected to the audio board GPIO pins.
+#define LEFT_RAMP 7
+#define RIGHT_RAMP 6
+
 // DHD buttons
 #define DHD_OUTER A2  // Serial pin 4
 #define DHD_INNER A3  // Serial pin 5
@@ -246,6 +250,21 @@ void pixelsOff() {
   pixels.show();
 }
 
+void initRampLights() {
+  debugln(F("Initializing Ramp Lights."));
+  audio.GPIO_pinMode(LEFT_RAMP, OUTPUT);
+  audio.GPIO_pinMode(RIGHT_RAMP, OUTPUT);
+}
+
+void toggleRampLights(bool left, bool right) {
+  debug(F("Turning left ramp: "));
+  debugln(left ? F("On") : F("Off"));
+  debug(F("Turning right ramp: "));
+  debugln(right ? F("On") : F("Off"));
+  audio.GPIO_digitalWrite(LEFT_RAMP, left ? HIGH : LOW);
+  audio.GPIO_digitalWrite(RIGHT_RAMP, right ? HIGH : LOW);
+}
+
 // Gate Movement functions
 
 void initMotors() {
@@ -446,6 +465,8 @@ void setup() {
   initMotors();
   initAudio();
   initSD();
+  initRampLights();
+  toggleRampLights(true, true);
   calibrateGlyphs();
   debugln(F("Initialization Complete."));
 }
