@@ -104,7 +104,7 @@
 #define GLYPH_RING_TEETH 78.0
 #define GLYPH_GEAR_RATIO ( GLYPH_RING_TEETH / GLYPH_GEAR_TEETH )
 #define GLYPH_RING_STEPS ( GLYPH_MOTOR_STEPS * GLYPH_GEAR_RATIO )
-#define STEPS_PER_GLYPH ( GLYPH_RING_STEPS / NUM_GLYPHS)
+#define STEPS_PER_GLYPH ( GLYPH_RING_STEPS / NUM_GLYPHS )
 #define NUM_PIXELS 9
 #define TOP_CHEVRON 4
 #define LOCK_STEPS 10
@@ -132,52 +132,6 @@ Adafruit_MCP23008 extra_pins = Adafruit_MCP23008();
 // Colors
 uint32_t off = pixels.Color(0, 0, 0);
 uint32_t on = pixels.Color(0, 255, 0);
-
-// The number of motor steps from the Earth glyph to each
-// list of glyphs in clockwise order.
-// http://rdanderson.com/stargate/glyphs/glyphs.htm
-// Explicitly declare the array size to ensure NUM_GLYPHS matches contents.
-float GLYPHS[(int) NUM_GLYPHS] = {
-  0, // Earth
-  1 * STEPS_PER_GLYPH, // Crater
-  2 * STEPS_PER_GLYPH, // Virgo
-  3 * STEPS_PER_GLYPH, // Bootes
-  4 * STEPS_PER_GLYPH, // Centaurus
-  5 * STEPS_PER_GLYPH, // Libra
-  6 * STEPS_PER_GLYPH, // Serpens Caput
-  7 * STEPS_PER_GLYPH, // Norma
-  8 * STEPS_PER_GLYPH, // Scorpio
-  9 * STEPS_PER_GLYPH, // Cra
-  10 * STEPS_PER_GLYPH, // Scutum
-  11 * STEPS_PER_GLYPH, // Sagittarius
-  12 * STEPS_PER_GLYPH, // Aquila
-  13 * STEPS_PER_GLYPH, // Mic
-  14 * STEPS_PER_GLYPH, // Capricon
-  15 * STEPS_PER_GLYPH, // Pisces Austrinus
-  16 * STEPS_PER_GLYPH, // Equuleus
-  17 * STEPS_PER_GLYPH, // Aquarius
-  18 * STEPS_PER_GLYPH, // Pegasus
-  19 * STEPS_PER_GLYPH, // Sculptor
-  20 * STEPS_PER_GLYPH, // Pisces
-  21 * STEPS_PER_GLYPH, // Andromeda
-  22 * STEPS_PER_GLYPH, // Triangulum
-  23 * STEPS_PER_GLYPH, // Aries
-  24 * STEPS_PER_GLYPH, // Perseus
-  25 * STEPS_PER_GLYPH, // Cetus
-  26 * STEPS_PER_GLYPH, // Taurus
-  27 * STEPS_PER_GLYPH, // Auriga
-  28 * STEPS_PER_GLYPH, // Eridanus
-  29 * STEPS_PER_GLYPH, // Orion
-  30 * STEPS_PER_GLYPH, // Canis Minor
-  31 * STEPS_PER_GLYPH, // Monoceros
-  32 * STEPS_PER_GLYPH, // Gemini
-  33 * STEPS_PER_GLYPH, // Hydra
-  34 * STEPS_PER_GLYPH, // Lynx
-  35 * STEPS_PER_GLYPH, // Cancer
-  36 * STEPS_PER_GLYPH, // Sextans
-  37 * STEPS_PER_GLYPH, // Leo Minor
-  38 * STEPS_PER_GLYPH, // Leo
-};
 
 // List of addresses provided by
 // http://www.rdanderson.com/stargate/glyphs/glyphs.htm
@@ -302,15 +256,61 @@ void calibrateGlyphs() {
 }
 
 void rotateGate(int glyph, int chevron) {
+  // The number of motor steps from the Earth glyph to each
+  // list of glyphs in clockwise order.
+  // http://rdanderson.com/stargate/glyphs/glyphs.htm
+  // Explicitly declare the array size to ensure NUM_GLYPHS matches contents.
+  int glyph_offsets[(int) NUM_GLYPHS] = {
+    int( 0 * STEPS_PER_GLYPH), // Earth
+    int(38 * STEPS_PER_GLYPH), // Crater
+    int(37 * STEPS_PER_GLYPH), // Virgo
+    int(36 * STEPS_PER_GLYPH), // Bootes
+    int(35 * STEPS_PER_GLYPH), // Centaurus
+    int(34 * STEPS_PER_GLYPH), // Libra
+    int(33 * STEPS_PER_GLYPH), // Serpens Caput
+    int(32 * STEPS_PER_GLYPH), // Norma
+    int(31 * STEPS_PER_GLYPH), // Scorpio
+    int(30 * STEPS_PER_GLYPH), // Cra
+    int(29 * STEPS_PER_GLYPH), // Scutum
+    int(28 * STEPS_PER_GLYPH), // Sagittarius
+    int(27 * STEPS_PER_GLYPH), // Aquila
+    int(26 * STEPS_PER_GLYPH), // Mic
+    int(25 * STEPS_PER_GLYPH), // Capricon
+    int(24 * STEPS_PER_GLYPH), // Pisces Austrinus
+    int(23 * STEPS_PER_GLYPH), // Equuleus
+    int(22 * STEPS_PER_GLYPH), // Aquarius
+    int(21 * STEPS_PER_GLYPH), // Pegasus
+    int(20 * STEPS_PER_GLYPH), // Sculptor
+    int(19 * STEPS_PER_GLYPH), // Pisces
+    int(18 * STEPS_PER_GLYPH), // Andromeda
+    int(17 * STEPS_PER_GLYPH), // Triangulum
+    int(16 * STEPS_PER_GLYPH), // Aries
+    int(15 * STEPS_PER_GLYPH), // Perseus
+    int(14 * STEPS_PER_GLYPH), // Cetus
+    int(13 * STEPS_PER_GLYPH), // Taurus
+    int(12 * STEPS_PER_GLYPH), // Auriga
+    int(11 * STEPS_PER_GLYPH), // Eridanus
+    int(10 * STEPS_PER_GLYPH), // Orion
+    int( 9 * STEPS_PER_GLYPH), // Canis Minor
+    int( 8 * STEPS_PER_GLYPH), // Monoceros
+    int( 7 * STEPS_PER_GLYPH), // Gemini
+    int( 6 * STEPS_PER_GLYPH), // Hydra
+    int( 5 * STEPS_PER_GLYPH), // Lynx
+    int( 4 * STEPS_PER_GLYPH), // Cancer
+    int( 3 * STEPS_PER_GLYPH), // Sextans
+    int( 2 * STEPS_PER_GLYPH), // Leo Minor
+    int( 1 * STEPS_PER_GLYPH), // Leo
+  };
+
   // Assume the gate starts with Earth at the top.
-  static float curr_glyph = GLYPHS[0];
+  static int curr_glyph = glyph_offsets[0];
   int direction = (chevron % 2) ? FORWARD : BACKWARD;
   int steps = 0;
 
-  // Bounds checking before we access GLYPHS.
+  // Bounds checking before we access glyph_offsets.
   glyph = constrain(glyph, 0, NUM_GLYPHS);
 
-  int offset = GLYPHS[glyph];
+  int offset = glyph_offsets[glyph];
   if (direction == FORWARD) {
     steps = offset - curr_glyph;
   } else if (direction == BACKWARD) {
@@ -336,7 +336,7 @@ void rotateGate(int glyph, int chevron) {
   // TODO(jo2y): Update rotate to take into account partial steps.
   SMGlyph->step((int) steps, direction, SINGLE);
   stopSound(3000);
-  curr_glyph = GLYPHS[glyph];
+  curr_glyph = glyph_offsets[glyph];
   lockChevron(chevron);
 }
 
