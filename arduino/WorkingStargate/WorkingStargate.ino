@@ -424,6 +424,16 @@ void initExtraPins() {
   }
 }
 
+void openGate() {
+  startSound(SOUND_WORMHOLE_OPENING);
+  waitSound();
+  startSound(SOUND_WORMHOLE_OPEN);
+  waitSound();
+  pixelsOff();
+  startSound(SOUND_WORMHOLE_CLOSING);
+  waitSound();
+}
+
 void randomDialing() {
   static int chevron = 5;
   debugln(F("Starting dialing sequence."));
@@ -437,13 +447,7 @@ void randomDialing() {
   rotateGate(random(NUM_GLYPHS), chevron);
   if (chevron == 4) {
     // The last chevron was locked, so open the gate.
-    startSound(SOUND_WORMHOLE_OPENING);
-    waitSound();
-    startSound(SOUND_WORMHOLE_OPEN);
-    waitSound();
-    pixelsOff();
-    startSound(SOUND_WORMHOLE_CLOSING);
-    waitSound();
+    openGate();
   }
   chevron++;
   
