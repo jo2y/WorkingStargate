@@ -210,7 +210,7 @@ void initRampLights() {
   audio.GPIO_pinMode(RIGHT_RAMP, OUTPUT);
 }
 
-void toggleRampLights(bool left, bool right) {
+void toggleRampLights(boolean left, boolean right) {
   debug(F("Turning left ramp: "));
   debugln(left ? F("On") : F("Off"));
   debug(F("Turning right ramp: "));
