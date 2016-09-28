@@ -106,7 +106,7 @@
 #define GLYPH_RING_STEPS ( GLYPH_MOTOR_STEPS * GLYPH_GEAR_RATIO )
 #define STEPS_PER_GLYPH ( GLYPH_RING_STEPS / NUM_GLYPHS)
 #define NUM_PIXELS 9
-#define TOP_PIXEL 4
+#define TOP_CHEVRON 4
 #define LOCK_STEPS 10
 
 // No user servicable values below here.
@@ -228,7 +228,7 @@ void initPixels() {
 }
 
 void lockChevron(int chevron) {
-  pixels.setPixelColor(TOP_PIXEL, on);
+  pixels.setPixelColor(TOP_CHEVRON, on);
   pixels.show();
   debugln(F("Lowering Top Chevron."));
   startSound(SOUND_CHEVRON_LOCK);
@@ -238,7 +238,7 @@ void lockChevron(int chevron) {
   waitSound();
   debugln(F("Raising Top Chevron."));
   SMChevron->step(LOCK_STEPS, FORWARD, SINGLE);
-  pixels.setPixelColor(TOP_PIXEL, off);
+  pixels.setPixelColor(TOP_CHEVRON, off);
   pixels.setPixelColor(chevron, on);
   pixels.show();
 }
