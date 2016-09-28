@@ -348,34 +348,40 @@ void initAudio() {
     audio.dumpRegs();
 #endif
   }
-  // Set volume multiple times to quickly narrow in on the set value.
-  // This is to overcome the dampening that happens normally.
-  setVolume(); setVolume(); setVolume(); setVolume(); setVolume();
+  setVolume();
   audio.useInterrupt(VS1053_FILEPLAYER_PIN_INT);
 }
 
 void setVolume() {
   static int oldvol = int((MINVOL + MAXVOL) / 2);
-  int vol = analogRead(AUDIO_VOLUME);
-  // analogRead will return (0, 1023) and setVolume takes (0, 254), but values
-  // larger than 90 seem too quiet to hear, so scale (0, 1024) to (0, 90).
-  // 0 is full volume and 254 is silence.
-  // 255 will activate analog shutdown mode.
-  vol = map(vol, 0, 1023, MINVOL, MAXVOL);
-  // Sometimes we get noise from the ADC, so constrain the jumps in volume
-  // to something sane. If the volume truly was changed a lot, we will gradually
-  // converge on the new setting.
-  vol = constrain(vol, oldvol - 3, oldvol + 3);
-  if (oldvol != vol) {
-    if (abs(oldvol - vol) > 2) {
-      // Avoid spamming serial if the volume is fluctuating by a small amount
-      // due to electrical noise.
-      debug(F("Changing volume to: "));
-      debugln(vol);
+  byte attempts = 20;
+  while (attempts > 0) {
+    --attempts;
+    int vol = analogRead(AUDIO_VOLUME);
+    // analogRead will return (0, 1023) and setVolume takes (0, 254), but values
+    // larger than 90 seem too quiet to hear, so scale (0, 1024) to (0, 90).
+    // 0 is full volume and 254 is silence.
+    // 255 will activate analog shutdown mode.
+    vol = map(vol, 0, 1023, MINVOL, MAXVOL);
+    // Sometimes we get noise from the ADC, so constrain the jumps in volume
+    // to something sane. If the volume truly was changed a lot, we will
+    // gradually converge on the new setting.
+    vol = constrain(vol, oldvol - 5, oldvol + 5);
+    if (oldvol != vol) {
+      if (abs(oldvol - vol) > 2) {
+        // Avoid spamming serial if the volume is fluctuating by a small amount
+        // due to electrical noise.
+        debug(F("Changing volume to: "));
+        debugln(vol);
+      }
+      audio.setVolume(vol, vol);
+    } else {
+      debugln(F("Volume Stabilized."));
+      return;
     }
-    audio.setVolume(vol, vol);
     oldvol = vol;
   }
+  debugln(F("Volume attempts exceeded."));
 }
 
 void startSound(const char *file) {
@@ -390,14 +396,16 @@ void startSound(const char *file) {
 
 void waitSound() {
   debugln(F("Waiting for track to end."));
+  setVolume();
   while(audio.playingMusic) {
-    setVolume();
     delay(100);
+    setVolume();
   }
 }
 
 void stopSound(int sleep) {
   debugln(F("Interrupting audio."));
+  setVolume();
   delay(sleep);
   audio.stopPlaying();
 }
