@@ -303,7 +303,7 @@ void rotateGate(int glyph, int chevron) {
   };
 
   // Assume the gate starts with Earth at the top.
-  static int curr_glyph = glyph_offsets[0];
+  static int curr_offset = glyph_offsets[0];
   int direction = (chevron % 2) ? FORWARD : BACKWARD;
   int steps = 0;
 
@@ -312,9 +312,9 @@ void rotateGate(int glyph, int chevron) {
 
   int offset = glyph_offsets[glyph];
   if (direction == FORWARD) {
-    steps = offset - curr_glyph;
+    steps = offset - curr_offset;
   } else if (direction == BACKWARD) {
-    steps = curr_glyph - offset;
+    steps = curr_offset - offset;
   }
   // Keep the rotation within a single rotation of the gate.
   while (steps < 0) {
@@ -336,7 +336,7 @@ void rotateGate(int glyph, int chevron) {
   // TODO(jo2y): Update rotate to take into account partial steps.
   SMGlyph->step((int) steps, direction, SINGLE);
   stopSound(3000);
-  curr_glyph = glyph_offsets[glyph];
+  curr_offset = glyph_offsets[glyph];
   lockChevron(chevron);
 }
 
