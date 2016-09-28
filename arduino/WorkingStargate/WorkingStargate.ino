@@ -294,9 +294,8 @@ void rotateGate(int glyph, int chevron) {
   startSound(SOUND_SHORT_SPIN);
   // TODO(jo2y): Update rotate to take into account partial steps.
   SMGlyph->step((int) steps, direction, SINGLE);
-  stopSound(3000);
+  stopSound(2000);
   curr_offset = glyph_offsets[glyph];
-  lockChevron(chevron);
 }
 
 void initAudio() {
@@ -383,6 +382,29 @@ void initExtraPins() {
   }
 }
 
+void dialAddress(byte *address, int length) {
+  length = constrain(length, 0, 8);
+  byte chevron = 5;
+  byte max_chevron = 7;
+  byte min_chevron = 1;
+  if (length > 6) max_chevron = 8;
+  if (length > 7) min_chevron = 0;
+  debugln(F("Starting dialing sequence."));
+  for (int position = 0; (position < length); ++position) {
+    debug(F("Locking in Chevron "));
+    debugln(chevron);
+    byte glyph = address[position];
+    glyph = constrain(glyph, 0, NUM_GLYPHS);
+    rotateGate(glyph, chevron);
+    lockChevron(chevron);
+    ++chevron;
+    if (chevron > max_chevron) chevron = min_chevron;
+  }
+  rotateGate(0, TOP_CHEVRON);
+  lockChevron(chevron);
+  openGate();
+}
+
 void openGate() {
   startSound(SOUND_WORMHOLE_OPENING);
   waitSound();
@@ -390,6 +412,7 @@ void openGate() {
   waitSound();
   pixelsOff();
   startSound(SOUND_WORMHOLE_CLOSING);
+  pixelsOff();
   waitSound();
 }
 
@@ -440,20 +463,16 @@ void randomDialing() {
   debug(F("Locking in Chevron "));
   debugln(chevron);
 
-  if (chevron == 5) {
-    delay(3000);
-    pixelsOff();
+  byte length = sizeof(milky_addresses[0]) / sizeof(byte);
+  byte addresses = sizeof(milky_addresses) / length / sizeof(byte);
+  byte *address = milky_addresses[random(addresses - 1)];
+  debug(F("Dialing: "));
+  for (int i = 0; i < length; ++i) {
+    debug(address[i]);
+    debug(F(", "));
   }
-  rotateGate(random(NUM_GLYPHS), chevron);
-  if (chevron == 4) {
-    // The last chevron was locked, so open the gate.
-    openGate();
-  }
-  chevron++;
-  
-  if (chevron > 7) {
-    chevron = 1;
-  }
+  debugln();
+  dialAddress(address, length);
 }
 
 void setup() {
@@ -467,7 +486,7 @@ void setup() {
   // to ensure the value is real random noise. However, all the pins are
   // allocated to something. Using CAL_LDR + AUDIO_VOLUME means randomness will
   // will be based on ambient light conditions and the last set volume.
-  int seed = analogRead(CAL_LDR) + analogRead(AUDIO_VOLUME);
+  int seed = analogRead(CAL_LDR);
   debug(F("Random seed: "));
   debugln(seed);
   randomSeed(seed);
