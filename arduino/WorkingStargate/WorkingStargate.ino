@@ -85,7 +85,7 @@
 // Debugging Settings
 //
 // Set DEBUG to 1 to enable Serial output, 0 to disable
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 #define debug(line) Serial.print(line)
